@@ -1,0 +1,103 @@
+import random
+import webbrowser
+#from selenium import webdriver
+import requests
+from bs4 import BeautifulSoup
+#import re
+#prints text from url
+from IPython import get_ipython
+get_ipython().magic('reset -sf')
+
+
+GEN_URL = 'https://www.incidence-deco.com/la-maison-bretonne-accueillante-et-chaleureuse/'
+
+html_text = requests.get(GEN_URL).text
+
+soup = BeautifulSoup(html_text,'html.parser')
+
+J = soup.find_all('p') #J is a vector with arrays J[i] is a paragraph, look for <p> divs s
+
+#print 2 paragraphs, a is rand within len(J) turn the array j[a] into a string element
+for i in range(1,3):
+    a = random.randint(10,len(J)-1) #a is some number between 1 and max[J]
+    w = str(J[a]) #turn the arrays into str
+    VAL = 0
+    while VAL == 0:   #while len(w) is less 150 we change its size, we want enough words
+         if len(w) < 150:
+            p = random.randint(10,len(J)-1)
+            w = str(J[p])
+         else: 
+             break #break the loop if len(w) has enough words
+             VAL = 1
+    w2 = w.replace('<p>','')   #get rid of <p and </p
+    w3 = w2.replace('</p>','')
+    w4 = w3.replace('<strong>','')
+    w5 = w4.replace('<p','')
+    print(w5 + '\n') #
+    webbrowser.open('https://www.google.com/search?q='+ w5)
+    
+    ###part2###
+    
+from bs4 import BeautifulSoup
+#from project2 import check
+import requests
+import requests.exceptions
+#from urllib.parse import urlparse
+#from collections import deque
+
+URL = 'https://www.rachelama.com/'
+
+"""nextnew_urls = deque([URL])"""
+reqs = requests.get(URL)
+soup = BeautifulSoup(reqs.text, 'html.parser')
+
+URLS = []
+for link in soup.find_all('a'):
+    print(link.get('href'))
+    data = link.get('href')
+    URLS.append(data)
+    
+#for i in range(10,13):
+
+###part3###
+import scrapy
+from selenium import webdriver
+from bs4 import BeautifulSoup
+import requests
+from requests_html import HTML
+from requests_html import HTMLSession
+
+DOMAINNAME = 'www.incidence-deco.com'
+
+URL = 'https://www.google.com/search?q=Belle maison traditionnelle de la Bretagne avec un toit en ardoise en pente et des murs en granit'
+
+session = HTMLSession()
+response = session.get(URL).text
+x = True
+sourcetext = BeautifulSoup(response,'lxml') #parse the html text
+
+
+substr = 'google'
+substr2 = 'https'
+#superlist = []
+count = 0
+
+
+Storethem = []
+for link in sourcetext.find_all('a'): #find all links in search rzlt page
+    data = link.get('href')
+    datastr = str(data)
+    
+    if substr in datastr:
+        x = False
+    elif substr2 in datastr:
+        #print(datastr)
+        Storethem.append(datastr)
+    #superlist.append(data)
+    
+print(Storethem[1:10])
+
+for EACHLINK in Storethem[1:10]:
+    if DOMAINNAME in EACHLINK:
+        print('we found a match!')
+ 
